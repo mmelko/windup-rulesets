@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<ruletest id="xml-moved-components-tests"
+		xmlns="http://windup.jboss.org/schema/jboss-ruleset"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://windup.jboss.org/schema/jboss-ruleset http://windup.jboss.org/schema/jboss-ruleset/windup-jboss-ruleset.xsd">
+	<testDataPath>data/xml-moved-components</testDataPath>
+	<rulePath>../xml-moved-components.windup.xml</rulePath>
+	<ruleset>
+		<rules>
+			<rule id="xml-moved-components-00000-test">
+				<when>
+					<not>
+						<iterable-filter size="1">
+							<hint-exists message="`camel-xslt` component has been moved from `camel-core` to separate artifact `org.apache.camel:camel-xslt`"/>
+						</iterable-filter>
+					</not>
+				</when>
+				<perform>
+					<fail message="[xml-moved-components] 'camel-xslt' dependency moved hint was not found!" />
+				</perform>
+			</rule>
+		</rules>
+	</ruleset>
+</ruletest>
