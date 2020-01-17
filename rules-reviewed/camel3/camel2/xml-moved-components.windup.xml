@@ -1,41 +1,60 @@
 <?xml version="1.0"?>
 <ruleset xmlns="http://windup.jboss.org/schema/jboss-ruleset" id="xml-moved-components"
-		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		xsi:schemaLocation="http://windup.jboss.org/schema/jboss-ruleset http://windup.jboss.org/schema/jboss-ruleset/windup-jboss-ruleset.xsd">
-	<metadata>
-		<description>
-			Rules for changes in XML file (e.g. pom.xml) to run on Apache Camel 3
-		</description>
-		<dependencies>
-			<addon id="org.jboss.windup.rules,windup-rules-java,3.0.0.Final"/>
-		</dependencies>
-		<sourceTechnology id="camel" versionRange="[2,3)"/>
-		<targetTechnology id="camel" versionRange="[3,)"/>
-	</metadata>
-	<rules>
-		<rule id="xml-moved-components-00000">
-			<when>
-				<xmlfile as="dependencies-block" matches="/m:project/m:dependencies" in="pom.xml">
-					<namespace prefix="m" uri="http://maven.apache.org/POM/4.0.0"/>
-				</xmlfile>
-				<xmlfile matches="//*/c:camelContext/c:route/c:to[starts-with(@uri,'xslt:')]">
-					<namespace prefix="c" uri="http://camel.apache.org/schema/spring"/>
-				</xmlfile>
-				<not>
-					<project>
-						<artifact groupId="org.apache.camel" artifactId="camel-xslt"/>
-					</project>
-				</not>
-			</when>
-			<perform>
-				<iteration over="dependencies-block">
-					<hint title="`camel-xslt` component has been move" effort="1" category-id="mandatory">
-						<message>`camel-xslt` component has been moved from `camel-core` to separate artifact `org.apache.camel:camel-xslt` that has to be added as a dependency to your project pom.xml file</message>
-						<link href="https://camel.apache.org/manual/latest/camel-3-migration-guide.html#_xslt" title="Camel 3 - Migration Guide: XSTL Migration" />
-					</hint>
-				</iteration>
-			</perform>
-		</rule>
-	</rules>
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://windup.jboss.org/schema/jboss-ruleset http://windup.jboss.org/schema/jboss-ruleset/windup-jboss-ruleset.xsd">
+    <metadata>
+        <description>
+            Rules for changes in XML file (e.g. pom.xml) to run on Apache Camel 3
+        </description>
+        <dependencies>
+            <addon id="org.jboss.windup.rules,windup-rules-java,3.0.0.Final"/>
+        </dependencies>
+        <sourceTechnology id="camel" versionRange="[2,3)"/>
+        <targetTechnology id="camel" versionRange="[3,)"/>
+    </metadata>
+    <rules>
+        <rule id="xml-moved-components-00000">
+            <when>
+                <xmlfile as="dependencies-block" matches="/m:project/m:dependencies" in="pom.xml">
+                    <namespace prefix="m" uri="http://maven.apache.org/POM/4.0.0"/>
+                </xmlfile>
+                <xmlfile matches="//*/c:camelContext/c:route/c:to[starts-with(@uri,'xslt:')]">
+                    <namespace prefix="c" uri="http://camel.apache.org/schema/spring"/>
+                </xmlfile>
+                <not>
+                    <project>
+                        <artifact groupId="org.apache.camel" artifactId="camel-xslt"/>
+                    </project>
+                </not>
+            </when>
+            <perform>
+                <iteration over="dependencies-block">
+                    <hint title="`camel-xslt` component has been move" effort="1" category-id="mandatory">
+                        <message>`camel-xslt` component has been moved from `camel-core` to separate artifact `org.apache.camel:camel-xslt` that has to be added as a dependency to your project pom.xml file</message>
+                        <link href="https://camel.apache.org/manual/latest/camel-3-migration-guide.html#_xslt" title="Camel 3 - Migration Guide: XSTL Migration" />
+                    </hint>
+                </iteration>
+            </perform>
+        </rule>
+        <rule id="xml-moved-components-00001">
+            <when>
+                <xmlfile as="dependencies-block" matches="/m:project/m:dependencies" in="pom.xml">
+                    <namespace prefix="m" uri="http://maven.apache.org/POM/4.0.0"/>
+                </xmlfile>
+                <javaclass references="org.apache.camel.builder.RouteBuilder" as="routeBuilders">
+                    <location>INHERITANCE</location>
+                </javaclass>
+                <filecontent pattern="to(&quot;xslt:" from="routeBuilders" as="xslt"/>
+            </when>
+            <perform>
+                <iteration over="dependencies-block">
+                    <hint title="`camel-xslt` component has been move" effort="1" category-id="mandatory">
+                        <message>`camel-xslt` component has been moved from `camel-core` to separate artifact `org.apache.camel:camel-xslt` that has to be added as a dependency to your project pom.xml file</message>
+                        <link href="https://camel.apache.org/manual/latest/camel-3-migration-guide.html#_xslt" title="Camel 3 - Migration Guide: XSTL Migration" />
+                    </hint>
+                </iteration>
+            </perform>
+        </rule>
+    </rules>
 </ruleset>
 
