@@ -121,3 +121,8 @@ ruleSet("java-generic-information-groovy")
         .perform(createMovedClassHint("org.apache.camel.util.jsse.{param}", "org.apache.camel.support.jsse.{param}", "class", mandatoryIssueCategory, "jsse"))
         .where("param").matches(".*")
         .withId("java-generic-information-00040")
+
+        .addRule()
+        .when(JavaClass.references("org.apache.camel.util.jndi.JndiContext").at(TypeReferenceLocation.IMPORT))
+        .perform(createMovedClassHint("org.apache.camel.util.jndi.JndiContext", "org.apache.camel.support.jndi.JndiContext", "class", mandatoryIssueCategory, "generic_classes"))
+        .withId("java-generic-information-00041")
