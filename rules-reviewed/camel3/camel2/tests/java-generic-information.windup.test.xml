@@ -532,6 +532,18 @@
                     <fail message="JndiContext moved hint not found!"/>
                 </perform>
             </rule>
+       <rule id="java-generic-information-00042-test">
+                <when>
+                    <not>
+                        <iterable-filter size="1">
+                            <hint-exists message="An override the `createRegistry` method is no longer necessary`.*"/>
+                        </iterable-filter>
+                    </not>
+                </when>
+                <perform>
+                    <fail message="not necessary"/>
+                </perform>
+            </rule>
         </rules>
     </ruleset>
 </ruletest>

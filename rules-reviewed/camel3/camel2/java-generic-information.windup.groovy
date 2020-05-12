@@ -12,14 +12,18 @@ import org.jboss.windup.reporting.config.Link
 import org.jboss.windup.reporting.model.QuickfixType
 import org.jboss.windup.reporting.quickfix.Quickfix
 import org.jboss.windup.rules.apps.java.condition.JavaClass
+import org.jboss.windup.rules.files.condition.FileContent
 import org.ocpsoft.rewrite.config.Condition
 import org.ocpsoft.rewrite.config.Or
+import org.ocpsoft.rewrite.config.And
 
 
 final String MOVED_FROM = "org.apache.camel.ThreadPoolRejectedPolicy"
 final String MOVED_TO = "org.apache.camel.util.concurrent.ThreadPoolRejectedPolicy"
 final IssueCategory optionalIssueCategory = new IssueCategoryRegistry().getByID(IssueCategoryRegistry.OPTIONAL)
 final IssueCategory mandatoryIssueCategory = new IssueCategoryRegistry().getByID(IssueCategoryRegistry.MANDATORY)
+
+final String jndiRegex = "(.*createRegistry)"
 
 Hint createHint(String title, String messase, String linkAppendix, boolean mandatory) {
     final String docTitleAppendix = (linkAppendix.substring(0, 1).toUpperCase() + linkAppendix.substring(1))
@@ -126,3 +130,18 @@ ruleSet("java-generic-information-groovy")
         .when(JavaClass.references("org.apache.camel.util.jndi.JndiContext").at(TypeReferenceLocation.IMPORT))
         .perform(createMovedClassHint("org.apache.camel.util.jndi.JndiContext", "org.apache.camel.support.jndi.JndiContext", "class", mandatoryIssueCategory, "generic_classes"))
         .withId("java-generic-information-00041")
+
+        .addRule()
+        .when(And.all(
+                JavaClass.references("org.apache.camel.test.junit4.CamelTestSupport").at(TypeReferenceLocation.INHERITANCE).as("testSupport"),
+                FileContent.from("testSupport").matches("{param}createRegistry()").inFileNamed("{*}.java"))
+        )
+        .perform(createHint(
+                "Override of `createRegistry` is not necessary anymore",
+                " An override the `createRegistry` method is no longer necessary. The preferred way is to use " +
+                        "the `bind` method from the Registry API: `context.getRegistry().bind(\"myId\", myBean);`",
+                "camel_test",
+                false
+        ))
+        .where("param").matches('.*')
+        .withId("java-generic-information-00042")
