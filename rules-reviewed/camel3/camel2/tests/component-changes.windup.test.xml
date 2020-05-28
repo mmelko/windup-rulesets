@@ -143,6 +143,32 @@
                     <fail message="[Consumer endpoints] removed .consumer prefix hint not found!"/>
                 </perform>
             </rule>
+            <rule id="component-changes-000012-test">
+                <when>
+                    <not>
+                        <iterable-filter size="5">
+                            <hint-exists
+                                    message="The default signature algorithm in the XMLSecurity component has changed `SHA1WithDSA.*`"/>
+                        </iterable-filter>
+                    </not>
+                </when>
+                <perform>
+                    <fail message="[xmlsecurity-component] changed  hint not found!"/>
+                </perform>
+            </rule>
+            <rule id="component-changes-000013-test">
+                <when>
+                    <not>
+                        <iterable-filter size="1">
+                            <hint-exists
+                                    message="The default signature algorithm in the Crypto component has changed `SHA1WithDSA.*`"/>
+                        </iterable-filter>
+                    </not>
+                </when>
+                <perform>
+                    <fail message="[Crypto-component] changed  hint not found!"/>
+                </perform>
+            </rule>
         </rules>
     </ruleset>
 </ruletest>

@@ -19,5 +19,11 @@ public class SampleRouteBuilder extends RouteBuilder {
     public void configure() throws Exception {
         from("imap://jones@localhost?password=secret&idempotentRepository=#myRepo&consumer.initialDelay=100&consumer.delay=100").routeId("foo").noAutoStartup()
                 .to("mock:result");
+
+        from("direct:enveloping")
+                .to("xmlsecurity-sign://enveloping?keyAccessor=#accessor", "mock:result")
+
+    from("direct:enveloping")
+                .to("crypto:sign://basic?privateKey=#myPrivateKey", "mock:result")
     }
 }
